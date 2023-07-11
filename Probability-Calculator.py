@@ -3,11 +3,12 @@ import copy
 
 
 def are_in_list(list1, list2):
+    new_list2 = copy.deepcopy(list2)
     result = []
     for item in list1:
-        if item in list2:
+        if item in new_list2:
             result.append(True)
-            list2.remove(item)
+            new_list2.remove(item)
         else:
             result.append(False)
 
@@ -24,13 +25,12 @@ class Hat():
                 num = num - 1
 
     def draw(self, remove):
-        balls = copy.deepcopy(self.contents)
         removed_balls = []
         while remove > 0:
             if len(self.contents) == 0:
                 return removed_balls
-            removed_element = random.choice(balls)
-            balls.remove(removed_element)
+            removed_element = random.choice(self.contents)
+            self.contents.remove(removed_element)
             removed_balls.append(removed_element)
             remove = remove - 1
         return removed_balls
@@ -46,7 +46,8 @@ def experiment(hat, expected_balls, num_balls_drawn, num_experiments):
     M = 0
     i = num_experiments
     while i > 0:
-        drawing = hat.draw(num_balls_drawn)
+        new_hat = copy.deepcopy(hat)
+        drawing = new_hat.draw(num_balls_drawn)
         if are_in_list(list_expected_balls, drawing):
             M = M + 1
         i = i - 1
@@ -60,6 +61,6 @@ probability = experiment(
     hat=hat,
     expected_balls={"blue": 2,
                     "red": 1},
-    num_balls_drawn=4,
+    num_balls_drawn=5,
     num_experiments=3000)
 print("Probability:", probability)
